@@ -6,7 +6,7 @@ Clojure functions for creating parameterized SQL statements.
 
 `jdbc-format` is available as a Maven artifact from [Clojars]:
 
-`["jdbc-format" "0.1.0"]
+`["jdbc-format" "0.1.0"]`
 
 `jdbc-format` follows [Semantic Versioning]
 
