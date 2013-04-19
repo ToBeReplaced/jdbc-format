@@ -10,6 +10,10 @@ Clojure functions for creating parameterized SQL statements.
 ```
 `jdbc-format` follows [Semantic Versioning].
 
+## Documentation
+
+[Codox API Documentation]
+
 ## Usage
 
 `jdbc-format` is intended to be used with [clojure.java.jdbc].  It provides a mechanism of turning declarative templates into map-based parmeterized sql statements, eliminating the complexity of keeping track of parameter ordering.
@@ -43,3 +47,4 @@ Distributed under the Eclipse Public License, the same as Clojure.
 [tests]: https://github.com/ToBeReplaced/jdbc-format/blob/master/test/jdbc_format/core_test.clj
 [source]: https://github.com/ToBeReplaced/jdbc-format/blob/master/src/jdbc_format/core.clj
 [Semantic Versioning]: http://semver.org
+[Codox API Documentation]: http://ToBeReplaced.github.com/jdbc-format
