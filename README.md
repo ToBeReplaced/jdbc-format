@@ -26,13 +26,18 @@ jdbc-format follows [Semantic Versioning].
 
 ## Usage
 
-First, you define a template string like:
+The library exports three functions: `sql`, `formatter` and `formatting`.
+
+Require the library:
+```clojure
+(require '(jdbc-format (core :refer [sql formatter formatting])))
+```
+
+Define a template string:
 ```clojure
 (def template
 "SELECT fruit FROM fruits WHERE color = :color AND citrus = :citrus?")
 ```
-
-The library exports three functions: `sql`, `formatter` and `formatting`.
 
 `sql` transforms your template into a string that can be used by jdbc:
 ```clojure
@@ -50,7 +55,7 @@ The library exports three functions: `sql`, `formatter` and `formatting`.
 ; ["yellow" false]
 ```
 
-`formatting` returns a map containing keys :sql and :formatter that correspond to the return values of their functions.  Since formatter and sql go together in the majority of cases, this is provided as a function and is the recommended usage.  Here as an example of using the formatting function to give you a sql-params sequence that can be passed to the `clojure.java.jdbc/query`:
+`formatting` returns a map containing keys `:sql` and `:formatter` that correspond to the return values of their functions.  Since formatter and sql go together in the majority of cases, this is provided as a function and is the recommended usage.  Here as an example of using `formatting` to give you a sql-params sequence that can be passed to the `clojure.java.jdbc/query`:
 ```clojure
 (let [{:keys [sql formatter]} (formatting template)]
   (concat [sql] (formatter {:color "orange" :citrus? true})))
