@@ -6,71 +6,69 @@ jdbc-format is intended to be used with [clojure.java.jdbc].  It provides a mech
 
 ## Supported Clojure Versions
 
-jdbc-format is tested on Clojure 1.4.0 and 1.5.1.
+jdbc-format is tested on Clojure 1.5.1 only.  It may work on other Clojure versions.
 
 ## Maturity
 
-The scope of jdbc-format is deliberately small.  However, it is not known to be used in a production environment.
+This is alpha quality software.
 
 ## Installation
 
 jdbc-format is available as a Maven artifact from [Clojars]:
 ```clojure
-[jdbc-format "0.1.0"]
+[jdbc-format "0.2.0"]
 ```
-jdbc-format follows [Semantic Versioning].
+jdbc-format follows [Semantic Versioning].  Please note that this means the public API for this library is not considered stable.
 
 ## Documentation
+
+The library exports three functions: `sql`, `formatter` and `sql-params-fn`.  If you are the 99% use-case, you should only ever use `sql-params-fn`.
 
 [Codox API Documentation]
 
 ## Usage
 
-The library exports three functions: `sql`, `formatter` and `formatting`.
-
-Require the library:
 ```clojure
-(require '(jdbc-format (core :refer [sql formatter formatting])))
-```
+(ns jdbc-format-usage
+  (:require (jdbc-format (core :refer [sql-params-fn]))))
 
-Define a template string:
-```clojure
 (def template
-"SELECT fruit FROM fruits WHERE color = :color AND citrus = :citrus?")
+  "SELECT fruit FROM fruits WHERE color = :color AND citrus = :citrus?")
+
+(def formatter
+  "A function that turns maps into a parameterized SQL vector according
+  to my template."
+  (sql-params-fn template))
+
+(formatter {:color "orange" :citrus? true})
+;; ["SELECT fruit FROM fruits WHERE color = ? AND citrus = ?" "orange" true]
+
+(formatter {:color "black"})
+;; ["SELECT fruit FROM fruits WHERE color = ? AND citrus = ?" "black" nil]
+
+(formatter {:color "yellow" :citrus? false :peel? true})
+;; ["SELECT fruit FROM fruits WHERE color = ? AND citrus = ?" "yellow" false]
 ```
 
-`sql` transforms your template into a string that can be used by jdbc:
-```clojure
-(sql template)
-; "SELECT fruit FROM fruits WHERE color = ? AND citrus = ?"
-```
+## Changelog
 
-`formatter` transforms your template into a function that accepts a map and returns a vector of parameters:
-```clojure
-((formatter template) {:color "orange" :citrus? true})
-; ["orange" true]
-((formatter template) {:color "black"})
-; ["black" nil]
-((formatter template) {:citrus? false :color "yellow" :peel? true})
-; ["yellow" false]
-```
+### v0.2.0
 
-`formatting` returns a map containing keys `:sql` and `:formatter` that correspond to the return values of their functions.  Since formatter and sql go together in the majority of cases, this is provided as a function and is the recommended usage.  Here as an example of using `formatting` to give you a sql-params sequence that can be passed to the `clojure.java.jdbc/query`:
-```clojure
-(let [{:keys [sql formatter]} (formatting template)]
-  (concat [sql] (formatter {:color "orange" :citrus? true})))
-; ("SELECT fruit FROM fruits WHERE color = ? AND citrus = ?" "orange" true)
-```
+- Remove the `formatting` function in favor of `sql-params-fn`, which covers the most common use case more effectively.
+
+### v0.1.0
+
+- Initial Release
 
 ## Support
 
-Contact ToBeReplaced on IRC at #clojure with any questions.
+Please post any comments, concerns, or issues to the Github issues page.
 
 ## License
 
 Copyright © 2013 ToBeReplaced
 
-Distributed under the Eclipse Public License, the same as Clojure.
+Distributed under the Eclipse Public License, the same as Clojure.  The license can be found at epl-v10.html in the root of this distribution.
 
 [Clojars]: http://clojars.org/jdbc-format
 [clojure.java.jdbc]: https://github.com/clojure/java.jdbc
