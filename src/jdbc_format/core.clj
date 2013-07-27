@@ -1,6 +1,7 @@
 (ns jdbc-format.core
   "Functions for creating parameterized SQL statements."
-  (:require (clojure (string :as string))))
+  (:require (clojure (string :as string))
+            (org.tobereplaced (mapply :refer [mapply]))))
 
 (def ^{:private true} clojure-keyword
   "Matches a clojure keyword beginning with a single colon."
@@ -36,10 +37,13 @@
     (apply juxt getters)
     (fn [m] [])))
 
-(defn formatting
-  "Returns a map containing :sql and :formatter for template and
-  optional options."
+(defn sql-params-fn
+  "Returns a function that accepts a map and returns a vector
+  containing the parameterized SQL statement from template and its
+  parameters from the map.  This vector can be passed directly to the
+  org.clojure.java/jdbc functions that accept sql-params as an
+  argument, like query."
   [template & {:as options}]
-  (let [options-seq (apply concat options)]
-    {:sql (apply sql template options-seq)
-     :formatter (apply formatter template options-seq)}))
+  (let [format-fn (mapply formatter template options)
+        sql-string (mapply sql template options)]
+    (fn [m] (->> m format-fn (cons sql-string) vec))))
