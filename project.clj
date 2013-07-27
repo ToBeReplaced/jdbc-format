@@ -1,4 +1,4 @@
-(defproject jdbc-format "0.2.0-SNAPSHOT"
+(defproject jdbc-format "0.2.0"
   :description "Functions for creating parameterized SQL statements."
   :url "https://github.com/ToBeReplaced/jdbc-format"
   :license {:name "Eclipse Public License"
